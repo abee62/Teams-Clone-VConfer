@@ -25,6 +25,7 @@ const CreateRoom = (props) => {
             </div>
             </div>
         <h2>Create a room and share the link to connect!</h2>
+        <h6>-by Abhirami R</h6>
       </div>
     </div>
             
