@@ -5,15 +5,7 @@ import Button from "@material-ui/core/Button"
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VolumeMuteIcon from '@material-ui/icons/VolumeMute';
 import ParticleBackground from "./ParticleBackground";
-
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-  } from "react-router-dom";
  
-
 const Room = (props) => {
     const userVideo = useRef();
     const partnerVideo = useRef();
@@ -102,7 +94,7 @@ const Room = (props) => {
         }
         const desc = new RTCSessionDescription(incoming.sdp);
         peerRef.current.setRemoteDescription(desc).then(() => {
-            userStream.current.getTracks().forEach(track => peerRef.current.addTrack(track, userStream.current));
+            userStream.current.getTracks().forEach(track => senders.current.push(peerRef.current.addTrack(track, userStream.current)));
         }).then(() => {
             return peerRef.current.createAnswer();
         }).then(answer => {
@@ -190,20 +182,18 @@ const Room = (props) => {
 
     function toggleVideo(){
 		userStream.current.getVideoTracks()[0].enabled = !(userStream.current.getVideoTracks()[0].enabled)
-	
-		
+        
 	}
 
     function toggleAudio(){
 		userStream.current.getAudioTracks()[0].enabled = !(userStream.current.getAudioTracks()[0].enabled)
-		
+
 	}
 
    
 
     return (
-       
-    
+           
     <div className ="room">
          <ParticleBackground/> 
         <div className="heading">
@@ -243,12 +233,15 @@ const Room = (props) => {
             {messages.map(renderMessage)}
         </div>
         <div className="Text">
-        <textarea className="MessageBox" value={text} onChange={handleChange} placeholder="Say something....." />
-        <Button variant="contained" color="primary" onClick={sendMessage}>Send..</Button>
+        <textarea className="MessageBox" value={text} onChange={handleChange} placeholder="Type your text" />
+        <Button variant="contained" color="primary" onClick={sendMessage}>Send</Button>
         </div>
         </div>
+        
          </div>
+         <h2>Share the website url to connect to another person!</h2>
         </div>
+        
     </div>
     
     
