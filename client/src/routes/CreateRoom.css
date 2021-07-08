@@ -1,0 +1,13 @@
+.home{
+    background-color: black;
+    color:white;
+    font-family: serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.button{
+    margin-top: 60px;
+}
+

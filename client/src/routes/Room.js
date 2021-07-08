@@ -4,12 +4,15 @@ import './Room.css';
 import Button from "@material-ui/core/Button"
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VolumeMuteIcon from '@material-ui/icons/VolumeMute';
+import ParticleBackground from "./ParticleBackground";
+
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
   } from "react-router-dom";
+ 
 
 const Room = (props) => {
     const userVideo = useRef();
@@ -22,7 +25,7 @@ const Room = (props) => {
     const sendChannel = useRef();
     const [text, setText] = useState("");
     const [messages, setMessages] = useState([]);
-
+   
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
@@ -195,15 +198,19 @@ const Room = (props) => {
 		userStream.current.getAudioTracks()[0].enabled = !(userStream.current.getAudioTracks()[0].enabled)
 		
 	}
+
    
 
     return (
        
-        <div>
-        <div>
-            <h1>Welcome to VConfer!</h1>   
-        <div>
-
+    
+    <div className ="room">
+         <ParticleBackground/> 
+        <div className="heading">
+        <h1>Welcome to VConfer!</h1>   
+        
+        
+        <div className="buttons">
 		<Button 
 		startIcon={<VideocamIcon/>}
 		variant="contained"
@@ -225,19 +232,26 @@ const Room = (props) => {
         onClick={shareScreen}>
             Share screen
         </Button>
-		</div>
 
-            <video style={{height: 300}} playsInline muted autoPlay ref={userVideo} />
-            <video style={{height: 300}} autoPlay ref={partnerVideo} />
         </div>
+        <div className="video">
+            <div className ="v1"><video style={{height: 300}} playsInline muted autoPlay ref={userVideo} /></div>
+            <div><video style={{height: 300}} autoPlay ref={partnerVideo} /></div>
+        
         <div className="Container">
         <div className="Messages">
             {messages.map(renderMessage)}
         </div>
+        <div className="Text">
         <textarea className="MessageBox" value={text} onChange={handleChange} placeholder="Say something....." />
         <Button variant="contained" color="primary" onClick={sendMessage}>Send..</Button>
+        </div>
+        </div>
+         </div>
+        </div>
     </div>
-    </div>
+    
+    
     );
 };
 

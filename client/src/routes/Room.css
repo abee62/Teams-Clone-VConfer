@@ -1,19 +1,68 @@
-.Container{
-    height: 50vh;
-    width: 30%;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-  /*  align-items: center;*/
+.room{
+ 
+  background-color: rgb(0, 0, 0);
+ color: cornsilk;
+ top: 0;
+ margin-bottom: 0px;
+ 
+}
+
+
+.heading{
+  align-self: center;
+  background-color: transparent;
+  width:100%; 
+  text-align: center;
+  font-style: normal;
+  color: white;
+  font-size: larger;
   position: absolute;
-  right: 50px;
-   
+  margin-left: auto;
+   top: 20px;
+   font-family: serif;
+   margin-right: 0px;
+   margin-bottom: 0px;
    
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  background-color:transparent;
+}
+
+.video{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 50px;
+  margin-top:20px;
+
+ 
+}
+
+.v1{
+  margin-right: 10px;
+}
+
+.Container{
+    position: relative;
+    height: 50vh;
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  margin-right: 20px;
+  margin-left: 10px;
+      
+}
+
+
 .Messages{
     width: 100%;
-    height: 50%;
+    height: 60%;
     border: 1px solid black;
     margin-top: 10px;
     overflow: scroll;
@@ -22,7 +71,11 @@
 
 .MessageBox{
     width: 100%;
-    height: 30%;
+    height: 60%;
+    border-radius: 3%;
+    border: 1px solid black;
+    background-color: rgb(255, 255, 255);
+   
 }
 
 .MyRow{
@@ -43,6 +96,7 @@
   border-radius: 20%;
 }
 
+
 .PartnerRow {
     width: 100%;
     display: flex;
@@ -60,4 +114,12 @@
   margin-left: 5px;
   text-align: center;
   border-radius: 20%;
+}
+
+.buttons{
+  margin-top:20px;
+  display: flex;
+  justify-content: space-between;
+  max-width: 400px;
+  margin-left: 50px;
 }

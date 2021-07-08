@@ -2,7 +2,7 @@ import React from "react";
 import { v1 as uuid } from "uuid";
 import './CreateRoom.css';
 import Button from "@material-ui/core/Button"
-
+import ParticleBackground from "./ParticleBackground";
 const CreateRoom = (props) => {
     function create() {
         const id = uuid();
@@ -10,10 +10,24 @@ const CreateRoom = (props) => {
     }
 
     return (
-        <div>
-            <h1>VConfer : TO CALL AND CHAT</h1>
-        <Button variant="contained" color="secondary" onClick={create}>Create Room</Button>
-        </div>
+    <div>
+        
+      <div className="home">
+        <ParticleBackground />
+            <div className ="heading">
+                <h1 >VCONFER : To Call and Chat</h1>
+            <div className="button">    
+                <Button variant="contained" 
+                    color="secondary" 
+                    onClick={create}>
+                    Create Room
+                </Button>
+            </div>
+            </div>
+        <h2>Create a room and share the link to connect!</h2>
+      </div>
+    </div>
+            
     );
 }
 
