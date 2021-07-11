@@ -1,3 +1,5 @@
+//for the animation background
+
 const particlesConfig = {
   particles: {
     number: {

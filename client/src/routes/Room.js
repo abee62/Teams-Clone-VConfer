@@ -13,7 +13,7 @@ const Room = (props) => {
     const socketRef = useRef();
     const otherUser = useRef();
     const userStream = useRef();
-    const senders = useRef([]);
+    const senders = useRef([]); //for screen sharing
     const sendChannel = useRef();
     const [text, setText] = useState("");
     const [messages, setMessages] = useState([]);
@@ -45,13 +45,6 @@ const Room = (props) => {
 
     }, []);
 
-    function callUser(userID) {
-        peerRef.current = createPeer(userID);
-        userStream.current.getTracks().forEach(track => senders.current.push(peerRef.current.addTrack(track, userStream.current)));
-        sendChannel.current = peerRef.current.createDataChannel("sendChannel");
-        sendChannel.current.onmessage = handleReceiveMessage;
-    }
-
     function createPeer(userID) {
         const peer = new RTCPeerConnection({
             iceServers: [
@@ -73,25 +66,40 @@ const Room = (props) => {
         return peer;
     }
 
+    function callUser(userID) {
+        peerRef.current = createPeer(userID);
+        userStream.current.getTracks().forEach(track => senders.current.push(peerRef.current.addTrack(track, userStream.current)));
+        
+        //creating data channel for sending texts
+        sendChannel.current = peerRef.current.createDataChannel("sendChannel");
+        sendChannel.current.onmessage = handleReceiveMessage;
+    }
+
+
     function handleNegotiationNeededEvent(userID) {
         peerRef.current.createOffer().then(offer => {
             return peerRef.current.setLocalDescription(offer);
         }).then(() => {
-            const payload = {
+
+                const payload = {
                 target: userID,
                 caller: socketRef.current.id,
                 sdp: peerRef.current.localDescription
             };
+
             socketRef.current.emit("offer", payload);
         }).catch(e => console.log(e));
     }
 
     function handleRecieveCall(incoming) {
         peerRef.current = createPeer();
+        //listening for messages
         peerRef.current.ondatachannel = (event) =>{
             sendChannel.current = event.channel;
             sendChannel.current.onmessage = handleReceiveMessage;
         }
+
+        //sdp represents our actual offer data
         const desc = new RTCSessionDescription(incoming.sdp);
         peerRef.current.setRemoteDescription(desc).then(() => {
             userStream.current.getTracks().forEach(track => senders.current.push(peerRef.current.addTrack(track, userStream.current)));
@@ -110,6 +118,7 @@ const Room = (props) => {
     }
 
     function handleAnswer(message) {
+        //sdp gonna be answer 
         const desc = new RTCSessionDescription(message.sdp);
         peerRef.current.setRemoteDescription(desc).catch(e => console.log(e));
     }
@@ -136,14 +145,17 @@ const Room = (props) => {
     };
 
     function shareScreen() {
+
         navigator.mediaDevices.getDisplayMedia({ cursor: true }).then(stream => {
             const screenTrack = stream.getTracks()[0];
+            //repalcing current video with screen that needs to be shared
             senders.current.find(sender => sender.track.kind === 'video').replaceTrack(screenTrack);
             screenTrack.onended = function() {
                 senders.current.find(sender => sender.track.kind === "video").replaceTrack(userStream.current.getTracks()[1]);
             }
         })
     }
+
     function renderMessage(message, index) {
         if (message.yours) {
             return (
@@ -164,18 +176,21 @@ const Room = (props) => {
         )
     }
 
-
+    //yours set to false to show it is coming from other user
     function handleReceiveMessage(e)
     {
         setMessages(messages => [...messages, {yours: false, value: e.data}]);
     }
 
+    //yours set to true because we are sending message
     function sendMessage(){
         
         sendChannel.current.send(text);
         setMessages(messages => [...messages, {yours: true, value: text}]);
+        //setting back to empty string to send another message
         setText("");
     }
+
     function handleChange(e) {
         setText(e.target.value);
     }
@@ -191,61 +206,79 @@ const Room = (props) => {
 	}
 
    
-
     return (
            
     <div className ="room">
-         <ParticleBackground/> 
+        <ParticleBackground/> 
         <div className="heading">
-        <h1>Welcome to VConfer!</h1>   
+            <h1>Welcome to VConfer!</h1>   
         
-        
-        <div className="buttons">
-		<Button 
-		startIcon={<VideocamIcon/>}
-		variant="contained"
-		color ="primary"
-		onClick= {()=>toggleVideo()}>
-		Video
-		</Button>
+            <div className="buttons">
 		
-		<Button 
-		startIcon={<VolumeMuteIcon/>}
-		variant="contained"
-		color="secondary"
-		onClick= {()=>toggleAudio()}>
-		Audio
-		</Button>
-        <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={shareScreen}>
-            Share screen
-        </Button>
+                <Button 
+		            startIcon={<VideocamIcon/>}
+		            variant="contained"
+		            color ="primary"
+		            onClick= {()=>toggleVideo()}>
+		            Video
+		        </Button>
+		
+		        <Button 
+		            startIcon={<VolumeMuteIcon/>}
+		            variant="contained"
+		            color="secondary"
+		            onClick= {()=>toggleAudio()}>
+		            Audio
+		        </Button>
+        
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={shareScreen}>
+                    Share screen
+                </Button>
 
-        </div>
-        <div className="video">
-            <div className ="v1"><video style={{height: 300}} playsInline muted autoPlay ref={userVideo} /></div>
-            <div><video style={{height: 300}} autoPlay ref={partnerVideo} /></div>
+            </div>
+
+            <div className="video">
+                <div className ="v1">
+                    <video style={{height: 300}} 
+                        playsInline muted autoPlay 
+                        ref={userVideo} />
+                </div>
+
+                <div>
+                    <video style={{height: 300}} 
+                        autoPlay ref={partnerVideo} />
+                </div>
         
-        <div className="Container">
-        <div className="Messages">
-            {messages.map(renderMessage)}
-        </div>
-        <div className="Text">
-        <textarea className="MessageBox" value={text} onChange={handleChange} placeholder="Type your text" />
-        <Button variant="contained" color="primary" onClick={sendMessage}>Send</Button>
-        </div>
-        </div>
+                <div className="Container">
         
-         </div>
-         <h2>Share the website url to connect to another person!</h2>
-        </div>
+                    <div className="Messages">
+                        {messages.map(renderMessage)}
+                    </div>
         
+                    <div className="Text">
+                        <textarea className="MessageBox" 
+                            value={text} onChange={handleChange} 
+                            placeholder="Type your text" />
+        
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            onClick ={sendMessage}>
+                            Send
+                        </Button>
+                    
+                    </div>
+
+                </div>
+        
+            </div>
+
+            <h2>Share the website url to connect to another person!</h2>        
+        </div>
     </div>
-    
-    
-    );
-};
+    );};
 
 export default Room;
