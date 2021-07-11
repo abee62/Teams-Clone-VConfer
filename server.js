@@ -31,11 +31,13 @@ io.on("connection", socket =>{
         io.to(payload.target).emit("answer",payload);
     });
 
+    //to make proper connnection
     socket.on("ice-candidate", incoming => {
         io.to(incoming.target).emit("ice-candidate", incoming.candidate);
     });
 });
 
+//for deployment
 if(process.env.PROD){
     app.use(express.static(path.join(__dirname, './client/build')));
     app.get('*',(req, res)=>{
