@@ -26,11 +26,11 @@ Needs two terminals running to get this going. There is an express and socket.io
 In the development mode, server side runs on [http://localhost:8000](http://localhost:8000) and client side on [http://localhost:3000](http://localhost:3000).
 
 ### Installing dependencies
-* Run **`yarn`** on root of the application folder.
-* Go to client directory and run **`yarn`** command.
+* Run `yarn` on root of the application folder.
+* Go to client directory and run `yarn` command.
 
 ### To get it running:
-* Run **`node server.js`** on the root side in one terminal
-* Run **`yarn start`** on the client directory in another terminal 
+* Run `node server.js` on the root side in one terminal
+* Run `yarn start` on the client directory in another terminal 
 
 Data channel in WebRTC is used for text chatting
