@@ -34,3 +34,7 @@ In the development mode, server side runs on [http://localhost:8000](http://loca
 * Run `yarn start` on the client directory in another terminal 
 
 Data channel in WebRTC is used for text chatting
+
+## Agile development
+ Chatting feature, toggling audio-video, screen sharing were added after the initial web app for video communication was built. 
+ This is an example of agile development.
